@@ -29,6 +29,6 @@
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <?php include 'modulo/js/javascript.php' ?>
-    <script src="main/fecth.js" ></script>
+   
 </body>
 </html>
