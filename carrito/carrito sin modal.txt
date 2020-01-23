@@ -13,6 +13,7 @@
                         {id:'P07',nombre:'Plumon',precio:20,imagen:'plumon.jpg',descripcion:'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'},
                         {id:'P08',nombre:'Regla',precio:10,imagen:'regla.png',descripcion:'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'}];
     
+        this.componentes = 
         this.constructor = function(){
             if(!localStorage.getItem("carrito")){
                 localStorage.setItem('carrito','[]');
@@ -53,7 +54,6 @@
         }
 
         this.eliminarItem = function(item){
-
             for(i in this.getCarrito){
                 if(this.getCarrito[i].id == item){
                     this.getCarrito.splice(i,1);
@@ -62,41 +62,43 @@
             }
             localStorage.setItem("carrito", JSON.stringify(this.getCarrito));
         }
-
     }
     
     // esta funcion me simula una clase
     function Carrito_View(){
         //simula un metod o es u metodo
         this.renderCatalogo = function(){
-            let template = ``;
+            let template = `<table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Descriocion</th>
+                                        <th scope="col">Nparte</th>
+                                        <th scope="col">Stock</th>
+                                        <th scope="col">Agregras</th>
+                                    </tr>
+                                </thead>`;
             for(let i in carrito.catalogo){
                template += `
-                <div class="column is-one-quarter">
-                <div class="card">
-                    <div class="card-image">
-                    <img src="./img/${carrito.catalogo[i].imagen}" alt="Placeholder">
-                    </div>
-                    <div class="card-content">
-                        <h2 class="title is-3">${carrito.catalogo[i].nombre}</h2>
-                        <p>${carrito.catalogo[i].descripcion}</p>
-                        <br>
-                        <h3 class="subtitle is-4">Precio: <strong>S/.${carrito.catalogo[i].precio}</strong></h3>
-                    </div>
-                    <div class="card-footer">
-                        <a href="#" class="card-footer-item" id="addItem" data-producto="${carrito.catalogo[i].id}">Agregar al Carrito</a>
-                    </div>
-                    </div>
-                </div>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>${carrito.catalogo[i].nombre}</td>
+                            <td>${carrito.catalogo[i].descripcion}</td>
+                            <td>${carrito.catalogo[i].precio}</td>
+                            <td> <a href="#" class="card-footer-item" id="addItem" data-producto="${carrito.catalogo[i].id}">+</a></td>
+                        </tr>
+       
                 `;
             }
+            template  += `</tbody></table>`;
+
             $('#catalogo').innerHTML = template;
         }
 
-        this.showModal = function(){
+        /*this.showModal = function(){
             $("#modal").classList.toggle('is-active');
-            this.renderCarrito();
-            
+            this.renderCarrito();        
         }
 
         this.hideModal = function(ev){
@@ -104,7 +106,7 @@
                 //$("#modal").classList.toggle('is-active');
                 this.showModal();
             }
-        }
+        }*/
 
         this.renderCarrito = function(){
 
@@ -117,16 +119,11 @@
                 for(i of carrito.getCarrito){
                     template += `
                     <div class="columns">
-                        <div class="column is-3">
-                            <figure>
-                                <img src="img/${i.imagen}" alt="">
-                            </figure>
-                        </div>
                         <div class="column is-3">${i.nombre}</div>
                         <div class="column is-2 has-text-centered">S/.${i.precio}</div>
                         <div class="column is-1 has-text-centered">${i.cantidad}</div>
                         <div class="column is-2 has-text-centered"><strong><i>S/.${i.cantidad * i.precio}</i></strong></div>
-                        <div class="column is-1"><p class="field"><a href="#" class="button is-danger"><span class="icon"><i class="fa fa-trash-o" id="deleteProducto" data-producto="${i.id}"></i></span></a></p></div>
+                        <div class="column is-1"><p class="field"><a href="#" class="button is-danger" id="deleteProducto" data-producto="${i.id}">delete</a></p></div>
                     </div>
                     `;
                 //console.log(i);
@@ -135,10 +132,10 @@
             }
             $('#totalCarrito').innerHTML="S/."+carrito.getTotal();
         }
-        this.TotalProductos = function(){
+       /* this.TotalProductos = function(){
             var total = carrito.getCarrito.length;
             $('#totalProductos > strong').innerHTML = total;
-        }
+        }*/
     }
 
     //instaciamos la funcion Carrito
@@ -147,31 +144,32 @@
 
     document.addEventListener('DOMContentLoaded',function(){
         carrito_view.renderCatalogo();
-        carrito_view.TotalProductos();
+        carrito_view.renderCarrito();
+        //carrito_view.TotalProductos();
         carrito.constructor();
         console.log(carrito.getCarrito);
-        carrito.getTotal();
+        carrito.getTotal()
+
+      
     });
     
-    $('#btn_carrito').addEventListener("click",function(){
-        carrito_view.showModal();
-        //carrito_view.renderCarrito();
-        
-    })
+    /*$('#btn_carrito').addEventListener("click",function(){
+        //carrito_view.showModal();
+        carrito_view.renderCarrito();
+    })*/
 
-    $("#modal").addEventListener("click",function(ev){
+    /*$("#modal").addEventListener("click",function(ev){
         carrito_view.hideModal(ev)      
-    })
-
+    })*/
 
     $("#catalogo").addEventListener("click",function(ev){
         ev.preventDefault();
         if(ev.target.id=="addItem"){
            carrito.agregarItem(ev.target.dataset.producto);
-           //carrito_view.renderCarrito();
-           carrito_view.showModal();
-           alert("Se agrego al carrito de compras");
-           carrito_view.TotalProductos();
+           carrito_view.renderCarrito();
+           //carrito_view.showModal();
+           //alert("Se agrego al carrito de compras");
+           //carrito_view.TotalProductos();
         }
     });
 
@@ -182,7 +180,5 @@
             carrito_view.renderCarrito();
             carrito_view.TotalProductos();
         }
-
     })
-    
 })();
